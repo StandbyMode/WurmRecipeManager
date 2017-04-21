@@ -1,0 +1,70 @@
+cabbage
+cabbage (chopped)
+cabbage (mashed)
+corn
+corn (chopped)
+corn (mashed)
+lettuce
+lettuce (chopped)
+lettuce (mashed)
+potato
+potato (chopped)
+potato (mashed)
+human meat
+human meat (diced)
+canine meat
+canine meat (diced)
+beef
+beef (diced)
+feline meat
+feline meat (diced)
+pork
+pork (diced)
+cheese
+feta cheese
+buffalo cheese
+rice
+basil
+basil (chopped)
+parsley
+parsley (chopped)
+sassafras
+sassafras (chopped)
+rosemary
+rosemary (chopped)
+paprika
+paprika (ground)
+cumin
+cumin (ground)
+tumeric
+tumeric (ground)
+nutmeg
+nutmeg (ground)
+sugar
+salt
+pea pod
+pea pod (chopped)
+pea pod (mashed)
+pumpkin
+pumpkin (chopped)
+pumpkin (mashed)
+carrot
+carrot (chopped)
+carrot (mashed)
+tomato
+tomato (chopped)
+tomato (mashed)
+oregano
+oregano (chopped)
+garlic
+garlic (chopped)
+cucumber
+cucumber (chopped)
+onion
+onion (chopped)
+bear
+bear (chopped)
+sage
+sage (chopped)
+mint
+mint (chopped)

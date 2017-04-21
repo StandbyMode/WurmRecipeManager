@@ -1,0 +1,138 @@
+Unassigned
+Body
+Body control
+Body stamina
+Body strength
+Mind
+Mind logic
+Mind speed
+Soul
+Soul depth
+Soul strength
+Alchemy
+Natural substances
+Archery
+Short bow
+Medium bow
+Long bow
+Axes
+Small axe
+Hatchet
+Large axe
+Huge axe
+Carpentry
+Bowyery
+Fletching
+Fine carpentry
+Toy making
+Ship building
+Climbing 
+Clubs
+Huge club
+Coal-making 
+Cooking
+Hot food cooking
+Baking
+Dairy food making
+Butchering
+Beverages
+Digging 
+Fighting
+Weaponless fighting
+Aggressive fighting
+Normal fighting
+Defensive fighting
+Taunting
+Shield bashing
+Firemaking 
+Hammers
+Warhammer
+Healing
+First aid
+Knives
+Carving knife
+Butchering knife
+Masonry
+Stone cutting
+Mauls
+Small maul
+Medium maul
+Large maul
+Milling 
+Mining 
+Miscellaneous items
+Shovel
+Rake
+Hammer
+Saw
+Sickle
+Scythe
+Repairing
+Pickaxe
+Stone chisel
+Nature
+Fishing
+Farming
+Forestry
+Milking
+Foraging
+Botanizing
+Gardening
+Animal taming
+Animal husbandry
+Meditating
+Papyrusmaking
+Paving 
+Polearms
+Halberd
+Long spear
+Staff
+Pottery 
+Prospecting 
+Religion
+Preaching
+Prayer
+Channeling
+Exorcism
+Ropemaking 
+Shields
+Small wooden shield
+Medium wooden shield
+Large wooden shield
+Medium shield
+Small metal shield
+Large metal shield
+Smithing
+Weapon smithing
+Blades smithing
+Weapon heads smithing
+Armour smithing
+Chain armour smithing
+Plate armour smithing
+Shield smithing
+Blacksmithing
+Locksmithing
+Metallurgy
+Jewelry smithing
+Swords
+Short sword
+Long sword
+Two handed sword
+Tailoring
+Cloth tailoring
+Leatherworking
+Thatching
+Thievery
+Stealing
+Lockpicking
+Traps
+Toys
+Yoyo
+Puppeteering
+Tracking 
+War machines
+Ballistae
+Catapults
+Trebuchets
+Turrets
+Woodcutting 

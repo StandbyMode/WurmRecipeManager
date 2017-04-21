@@ -1,0 +1,183 @@
+﻿<Window x:Class="WurmRecipeManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:self="clr-namespace:WurmRecipeManager"
+        Title="Wurm Recipe Manager" Height="450" Width="525"
+        x:Name="ParentWnd" Closing="OnClose">
+    <Window.InputBindings>
+        <KeyBinding Key="A" Modifiers="Control" Command="{Binding Path=AddIngredientCommand, ElementName=ParentWnd}"/>
+    </Window.InputBindings>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0">
+            <MenuItem Header="File">
+                <MenuItem Header="Quit" Click="QuitApplication"/>
+            </MenuItem>
+            <MenuItem Header="Lists">
+                <MenuItem x:Name="RefreshConsumers" Header="Reload consumer list" Click="RefreshList"/>
+                <MenuItem x:Name="RefreshIngredients" Header="Reload ingredient list" Click="RefreshList"/>
+                <MenuItem x:Name="RefreshContainers" Header="Reload container list" Click="RefreshList"/>
+                <MenuItem x:Name="RefreshSkills" Header="Reload skills list" Click="RefreshList"/>
+
+                <MenuItem x:Name="OpenConsumers" Header="Open consumers file" Click="OpenListFile"/>
+                <MenuItem x:Name="OpenIngredients" Header="Open ingredients file" Click="OpenListFile"/>
+                <MenuItem x:Name="OpenContainers" Header="Open containers file" Click="OpenListFile"/>
+                <MenuItem x:Name="OpenSkills" Header="Open skills file" Click="OpenListFile"/>
+            </MenuItem>
+        </Menu>
+        <TabControl Grid.Row="1">
+            <TabItem Header="Workbench">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="100*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+
+                        <ColumnDefinition Width="110*"/>
+                        <ColumnDefinition Width="400*"/>
+
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Content="Name"/>
+                    <Label Grid.Row="1" Content="Cooker"/>
+                    <Label Grid.Row="2" Content="Ingredients"/>
+
+
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+                        <TextBox x:Name="txtRecipeName" Margin="5" Width="250"/>
+                        <Button x:Name="btnSaveRecipe" Content="Cook Recipe" Click="SaveRecipe" Margin="3"/>
+                    </StackPanel>
+
+                    <ComboBox Grid.Row="1" x:Name="ContainerSelect" ItemsSource="{Binding Path=Containers, ElementName=ParentWnd}" Grid.Column="1" Margin="5" SelectionChanged="ContainerSelected"/>
+
+
+                    <ScrollViewer Grid.Row="2" Grid.Column="1" Margin="5">
+                        <StackPanel Orientation="Vertical">
+                            <ItemsControl ItemsSource="{Binding CurrentRecipe.Ingredients, ElementName=ParentWnd}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <ComboBox ItemsSource="{Binding Path=Ingredients, ElementName=ParentWnd}" SelectedValue="{Binding Name, Mode=OneWayToSource}" MinWidth="250"/>
+                                            <Button Content="-" Click="RemoveWorkbenchIngredient" Width="25" Focusable="False"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button Content="+" Click="AddWorkbenchIngredient" Width="100" HorizontalAlignment="Left"/>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Consumers">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="175"/>
+                            <ColumnDefinition Width="200*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Recipe Name"/>
+                        <ItemsControl Grid.Column="1" Margin="3" ItemsSource="{Binding Consumers, ElementName=ParentWnd}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Label Content="{Binding}" Width="100"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                    <ItemsControl Grid.Column="1" ItemsSource="{Binding RecipesToTaste, ElementName=ParentWnd}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="25"/>
+                                        <ColumnDefinition Width="200*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="{Binding Name}" Grid.Column="0"/>
+                                    <Button Grid.Column="1" Margin="3" Content="->" ToolTip="Move to archive" Click="ArchiveRecipe"/>
+                                    <ItemsControl Grid.Column="2" ItemsSource="{Binding Affinities}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <ComboBox Margin="3" SelectedValue="{Binding Affinity, Mode=TwoWay}" Width="100" ItemsSource="{Binding ElementName=ParentWnd, Path=Skills}">
+                                                    
+                                                </ComboBox>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+
+            </TabItem>
+            <TabItem Header="Archive">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="150*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="100*"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+
+                    <ComboBox x:Name="ConsumerSearch" Grid.Row="0" ItemsSource="{Binding ElementName=ParentWnd, Path=Consumers}" Margin="7"/>
+                    <ComboBox x:Name="AffinitySearch" Grid.Row="0" ItemsSource="{Binding ElementName=ParentWnd, Path=Skills}" Margin="7" Grid.Column="1"/>
+                    <Button Content="Search affinity" Grid.Row="0" Grid.Column="2" Margin="5" Width="100" HorizontalAlignment="Left" Click="SearchAffinity"/>
+                    
+                    <TextBox x:Name="txtNameSearch" Grid.Row="1" Grid.ColumnSpan="2" Margin="8"/>
+                    <Button x:Name="btnSearchByName" Grid.Row="1" Grid.Column="2" Click="SearchByName" Margin="6" Content="Search by name" Width="100" HorizontalAlignment="Left"/>
+
+                    <ListBox Grid.Row="2" x:Name="SearchResults" ItemsSource="{Binding}" Margin="10" SelectionChanged="ViewSearchResult"/>
+                    <Button Grid.Row="3" Content="Reassign affinities" Click="RetractRecipe" Margin="7"/>
+                    <Button Grid.Row="4" Content="Delete from archive" Click="DeleteRecipe" Margin="7"/>
+                    
+                    
+                    <Grid Grid.Column="1" Grid.ColumnSpan="1" Grid.RowSpan="3" Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="30*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock x:Name="SearchResultContainer" VerticalAlignment="Center">
+                            <Run Text="Cooked in: "/>
+                            <Run Text="{Binding Path=SelectedValue.Container, ElementName=SearchResults}"/>
+                        </TextBlock>
+
+                        <ListBox x:Name="SearchResultIngredients" Grid.Row="1" Margin="10" ItemsSource="{Binding Path=SelectedValue.Ingredients, ElementName=SearchResults}"/>
+
+                        
+                    </Grid>
+                    <ListBox x:Name="SearchResultAffinities" Grid.Row="2" Grid.Column="3" Grid.RowSpan="3" Margin="10" ItemsSource="{Binding Path=SelectedValue.Affinities, ElementName=SearchResults}"/>
+
+                </Grid>
+                
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
