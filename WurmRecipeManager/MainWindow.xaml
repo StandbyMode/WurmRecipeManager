@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:self="clr-namespace:WurmRecipeManager"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         Title="Wurm Recipe Manager" Height="450" Width="525"
         x:Name="ParentWnd" Closing="OnClose">
     <Window.InputBindings>
@@ -164,13 +165,20 @@
                             <RowDefinition Height="20"/>
                             <RowDefinition Height="30*"/>
                         </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <CollectionViewSource x:Key="IngredientSorter" Source="{Binding Path=SelectedValue.Ingredients, ElementName=SearchResults}">
+                                <CollectionViewSource.SortDescriptions>
+                                    <scm:SortDescription PropertyName="Name"/>
+                                </CollectionViewSource.SortDescriptions>
+                            </CollectionViewSource>
+                        </Grid.Resources>
                         
                         <TextBlock x:Name="SearchResultContainer" VerticalAlignment="Center">
                             <Run Text="Cooked in: "/>
                             <Run Text="{Binding Path=SelectedValue.Container, ElementName=SearchResults}"/>
                         </TextBlock>
 
-                        <ListBox x:Name="SearchResultIngredients" Grid.Row="1" Margin="10" ItemsSource="{Binding Path=SelectedValue.Ingredients, ElementName=SearchResults}"/>
+                        <ListBox x:Name="SearchResultIngredients" Grid.Row="1" Margin="10" ItemsSource="{Binding Source={StaticResource IngredientSorter}}"/>
 
                         
                     </Grid>

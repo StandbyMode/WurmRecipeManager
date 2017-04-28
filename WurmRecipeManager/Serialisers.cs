@@ -254,7 +254,7 @@ namespace WurmRecipeManager
                             first = false;
                         }
                         string ing = (string)fetch.GetValue(6);
-                        ingredients.Add(new Ingredient() { Name = ing });
+                        recipe.Ingredients.Add(new Ingredient() { Name = ing });
                         fetch.Read();
                     }
 
@@ -264,10 +264,10 @@ namespace WurmRecipeManager
                 }
             }
 
-            ingredients.Sort((i1,i2) => i1.Name.CompareTo(i2.Name));
+            //ingredients.Sort((i1,i2) => i1.Name.CompareTo(i2.Name));
 
-            foreach (Ingredient ing in ingredients)
-                recipe.Ingredients.Add(ing);
+            //foreach (Ingredient ing in ingredients)
+            //    recipe.Ingredients.Add(ing);
 
             using (SQLiteCommand comm_affs = new SQLiteCommand("SELECT Consumer,Affinity FROM Consumers WHERE R_Id = :id ORDER BY Consumer ASC", conn))
             {
