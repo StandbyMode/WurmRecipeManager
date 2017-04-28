@@ -306,6 +306,8 @@ namespace WurmRecipeManager
                     if (consumers.Count == 0 || string.IsNullOrEmpty(consumers.FirstOrDefault()))
                     {
                         MessageBox.Show("Consumer list appears to be empty. Please select\"Lists\"->\"Open consumers file\" and add one line for each of your characters.\nThen reload the list using \"Reload consumers file\"", "No consumers registered.");
+                        Consumers = new List<String>();
+                        return;
                     }
 
                     consumers.Sort();
@@ -451,6 +453,13 @@ namespace WurmRecipeManager
                 return;
             }
 
+            var uniques = CurrentRecipe.Ingredients.Distinct(new IngredientComparer());
+            if (uniques.Count() < CurrentRecipe.Ingredients.Count)
+            {
+                MessageBox.Show("Cannot use the same ingredient multiple times!");
+                return;
+            }
+ 
             CurrentRecipe.Name = txtRecipeName.Text;
 
             if (string.IsNullOrWhiteSpace(CurrentRecipe.Name))

@@ -18,7 +18,7 @@ namespace WurmRecipeManager
 
         public int GetHashCode(Ingredient obj)
         {
-            return obj.GetHashCode();
+            return obj.Name.GetHashCode();
         }
     }
 
@@ -134,6 +134,16 @@ namespace WurmRecipeManager
             {
                 _affinities = value;
                 PropChange("Affinities");
+            }
+        }
+
+        public String TooltipString
+        {
+            get
+            {
+                List<String> ings = Ingredients.Select(i => i.Name).ToList();
+                ings.Sort();
+                return "Cooked in:\n" + Container + "\nIngredients:\n" + ings.Aggregate((s1, s2) => s1 + ", " + s2);
             }
         }
 

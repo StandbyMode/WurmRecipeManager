@@ -106,7 +106,8 @@
                                         <ColumnDefinition Width="25"/>
                                         <ColumnDefinition Width="200*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Content="{Binding Name}" Grid.Column="0"/>
+                                    <Label Content="{Binding Name}" Grid.Column="0" ToolTip="{Binding TooltipString}"/>
+
                                     <Button Grid.Column="1" Margin="3" Content="->" ToolTip="Move to archive" Click="ArchiveRecipe"/>
                                     <ItemsControl Grid.Column="2" ItemsSource="{Binding Affinities}">
                                         <ItemsControl.ItemsPanel>

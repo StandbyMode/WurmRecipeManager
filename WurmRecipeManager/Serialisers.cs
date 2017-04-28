@@ -235,7 +235,7 @@ namespace WurmRecipeManager
         private Recipe GetRecipeByID(long id, long status)
         {
             Recipe recipe = new Recipe();
-
+            List<Ingredient> ingredients = new List<Ingredient>();
             recipe.Id = (long)id;
             using (SQLiteCommand comm_ings = new SQLiteCommand("SELECT * FROM Recipes INNER JOIN Ingredients ON Recipes.R_Id = Ingredients.R_Id WHERE Recipes.R_Id = :id AND Status = :status", conn))
             {
@@ -254,7 +254,7 @@ namespace WurmRecipeManager
                             first = false;
                         }
                         string ing = (string)fetch.GetValue(6);
-                        recipe.Ingredients.Add(new Ingredient() { Name = ing });
+                        ingredients.Add(new Ingredient() { Name = ing });
                         fetch.Read();
                     }
 
@@ -263,6 +263,11 @@ namespace WurmRecipeManager
 
                 }
             }
+
+            ingredients.Sort((i1,i2) => i1.Name.CompareTo(i2.Name));
+
+            foreach (Ingredient ing in ingredients)
+                recipe.Ingredients.Add(ing);
 
             using (SQLiteCommand comm_affs = new SQLiteCommand("SELECT Consumer,Affinity FROM Consumers WHERE R_Id = :id ORDER BY Consumer ASC", conn))
             {
@@ -274,7 +279,10 @@ namespace WurmRecipeManager
                     {
                         string aff = fetch.GetValue(1) as string;
                         if (aff != null)
+                        {
+                            aff = aff.Trim();
                             recipe.Affinities.Add(new CharacterAffinity() { Character = (string)fetch.GetValue(0), Affinity = (string)aff });
+                        }
                         fetch.Read();
                     }
                 }
