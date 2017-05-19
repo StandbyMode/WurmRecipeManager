@@ -78,58 +78,72 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Consumers">
-                <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="175"/>
                             <ColumnDefinition Width="200*"/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="Recipe Name"/>
-                        <ItemsControl Grid.Column="1" Margin="3" ItemsSource="{Binding Consumers, ElementName=ParentWnd}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Label Content="{Binding}" Width="100"/>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Grid>
-                    <ItemsControl Grid.Column="1" ItemsSource="{Binding RecipesToTaste, ElementName=ParentWnd}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Recipe Name"/>
+                    <ScrollViewer x:Name="scrlView" Grid.Column="1" Grid.RowSpan="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <ItemsControl Grid.Column="1" Height="30" Margin="0" ItemsSource="{Binding Consumers, ElementName=ParentWnd}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding}" Width="100" Margin="3"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <ItemsControl Margin="0" ItemsSource="{Binding RecipesToTaste, ElementName=ParentWnd}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <ItemsControl Margin="0" ItemsSource="{Binding Affinities}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ComboBox SelectedValue="{Binding Affinity, Mode=TwoWay}" Margin="3" ItemsSource="{Binding ElementName=ParentWnd, Path=Skills}" Width="100"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+                    
+                    <ItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding RecipesToTaste, ElementName=ParentWnd}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="150"/>
                                         <ColumnDefinition Width="25"/>
-                                        <ColumnDefinition Width="200*"/>
                                     </Grid.ColumnDefinitions>
                                     <Label Content="{Binding Name}" Grid.Column="0" ToolTip="{Binding TooltipString}"/>
 
                                     <Button Grid.Column="1" Margin="3" Content="->" ToolTip="Move to archive" Click="ArchiveRecipe"/>
-                                    <ItemsControl Grid.Column="2" ItemsSource="{Binding Affinities}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <StackPanel Orientation="Horizontal"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <ComboBox Margin="3" SelectedValue="{Binding Affinity, Mode=TwoWay}" Width="100" ItemsSource="{Binding ElementName=ParentWnd, Path=Skills}">
-                                                    
-                                                </ComboBox>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </StackPanel>
-
+                </Grid>
 
             </TabItem>
             <TabItem Header="Archive">
