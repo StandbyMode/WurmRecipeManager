@@ -14,6 +14,8 @@ namespace WurmRecipeManager
         // This must also assign a the serialiser ID.
         void SaveRecipe(Recipe recipe);
 
+        void UpdateRecipeName(Recipe recipe);
+
         // return true if database contains this exact recipe
         bool ContainsRecipe(Recipe recipe);
 
@@ -120,6 +122,19 @@ namespace WurmRecipeManager
                 //        comm_insert_affs.ExecuteNonQuery();
                 //    }
                 //}
+            }
+            conn.Close();
+        }
+
+        public void UpdateRecipeName(Recipe recipe)
+        {
+            conn.Open();
+
+            using (SQLiteCommand comm = new SQLiteCommand("UPDATE Recipes SET Name = :name WHERE R_ID = :id", conn))
+            {
+                comm.Parameters.Add(new SQLiteParameter(":id", recipe.Id));
+                comm.Parameters.Add(new SQLiteParameter(":name", recipe.Name));
+                int ret = comm.ExecuteNonQuery();
             }
             conn.Close();
         }

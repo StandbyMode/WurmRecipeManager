@@ -156,6 +156,27 @@ namespace WurmRecipeManager
                 Affinities = new List<CharacterAffinity>();
         }
 
+        // Makes a deep copy of the recipe to keep using a forked recipe in the Workbench tab
+        public Recipe Fork()
+        {
+            Recipe res = new Recipe();
+
+            res.Name = this.Name;
+
+            res.Container = this.Container;
+
+            foreach (var ca in Affinities)
+            {
+                res.Affinities.Add(new CharacterAffinity() { Character = ca.Character });
+            }
+            foreach (var ing in Ingredients)
+            {
+                res.Ingredients.Add(new Ingredient() { Name = ing.Name });
+            }
+
+            return res;
+        }
+
         public override int GetHashCode()
         {
             List<String> ings =  Ingredients.Select(i => i.Name).ToList();

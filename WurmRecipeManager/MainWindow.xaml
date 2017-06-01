@@ -31,7 +31,7 @@
                 <MenuItem x:Name="OpenSkills" Header="Open skills file" Click="OpenListFile"/>
             </MenuItem>
         </Menu>
-        <TabControl Grid.Row="1">
+        <TabControl Grid.Row="1" x:Name="TabController">
             <TabItem Header="Workbench">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -52,11 +52,12 @@
 
 
                     <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
-                        <TextBox x:Name="txtRecipeName" Margin="5" Width="250"/>
+                        <TextBox x:Name="txtRecipeName" Margin="5" Width="200" Text="{Binding CurrentRecipe.Name, ElementName=ParentWnd}"/>
                         <Button x:Name="btnSaveRecipe" Content="Cook Recipe" Click="SaveRecipe" Margin="3"/>
+                        <Button x:Name="btnForkRecipe" Content="Fork Recipe" Click="SaveRecipe" Margin="3"/>
                     </StackPanel>
 
-                    <ComboBox Grid.Row="1" x:Name="ContainerSelect" ItemsSource="{Binding Path=Containers, ElementName=ParentWnd}" Grid.Column="1" Margin="5" SelectionChanged="ContainerSelected"/>
+                    <ComboBox Grid.Row="1" x:Name="ContainerSelect" ItemsSource="{Binding Path=Containers, ElementName=ParentWnd}" Grid.Column="1" Margin="5" SelectedValue="{Binding CurrentRecipe.Container,ElementName=ParentWnd, Mode=TwoWay}"/>
 
 
                     <ScrollViewer Grid.Row="2" Grid.Column="1" Margin="5">
@@ -65,7 +66,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <ComboBox ItemsSource="{Binding Path=Ingredients, ElementName=ParentWnd}" SelectedValue="{Binding Name, Mode=OneWayToSource}" MinWidth="250"/>
+                                            <ComboBox ItemsSource="{Binding Path=Ingredients, ElementName=ParentWnd}" SelectedValue="{Binding Name, Mode=TwoWay}" MinWidth="250"/>
                                             <Button Content="-" Click="RemoveWorkbenchIngredient" Width="25" Focusable="False"/>
                                         </StackPanel>
                                     </DataTemplate>
@@ -88,20 +89,22 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Label Content="Recipe Name"/>
-                    <ScrollViewer x:Name="scrlView" Grid.Column="1" Grid.RowSpan="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
-                            <ItemsControl Grid.Column="1" Height="30" Margin="0" ItemsSource="{Binding Consumers, ElementName=ParentWnd}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding}" Width="100" Margin="3"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                    <ScrollViewer x:Name="scrConsumers" Grid.Column="1" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
+                        <ItemsControl Grid.Column="1" Height="30" Margin="0" ItemsSource="{Binding Consumers, ElementName=ParentWnd}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Label Content="{Binding}" Width="100" Margin="3"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    <ScrollViewer x:Name="scrViewAffinities" Grid.Column="1" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" ScrollChanged="scrUpdateHiddenScrolls">
+                          
                             <ItemsControl Margin="0" ItemsSource="{Binding RecipesToTaste, ElementName=ParentWnd}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -125,24 +128,31 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                        </StackPanel>
                     </ScrollViewer>
-                    
-                    <ItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding RecipesToTaste, ElementName=ParentWnd}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="150"/>
-                                        <ColumnDefinition Width="25"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Label Content="{Binding Name}" Grid.Column="0" ToolTip="{Binding TooltipString}"/>
 
-                                    <Button Grid.Column="1" Margin="3" Content="->" ToolTip="Move to archive" Click="ArchiveRecipe"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <ScrollViewer x:Name="scrRecipeNames" Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Hidden">
+                        <ItemsControl ItemsSource="{Binding RecipesToTaste, ElementName=ParentWnd}" Padding="0,0,0,20">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="125"/>
+                                            <ColumnDefinition Width="25"/>
+                                            <ColumnDefinition Width="25"/>
+
+                                        </Grid.ColumnDefinitions>
+                                        <self:EditableLabel x:Name="lblRecipeName" Text="{Binding Name}" Grid.Column="0" ToolTip="{Binding TooltipString}"
+                                              
+                                               
+                                               MouseDoubleClick="EditRecipeName" KeyDown="EditRecipeNameKeyDown"/>
+                                        
+                                        <Button Grid.Column="1" Margin="3" Content="&lt;-" ToolTip="Move to back to workbench" Click="EditRecipe"/>
+                                        <Button Grid.Column="2" Margin="3" Content="->" ToolTip="Move to archive" Click="ArchiveRecipe"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </Grid>
 
             </TabItem>
@@ -158,8 +168,9 @@
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="100*"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="35"/>
                     </Grid.RowDefinitions>
 
                     <ComboBox x:Name="ConsumerSearch" Grid.Row="0" ItemsSource="{Binding ElementName=ParentWnd, Path=Consumers}" Margin="7"/>
@@ -170,11 +181,12 @@
                     <Button x:Name="btnSearchByName" Grid.Row="1" Grid.Column="2" Click="SearchByName" Margin="6" Content="Search by name" Width="100" HorizontalAlignment="Left"/>
 
                     <ListBox Grid.Row="2" x:Name="SearchResults" ItemsSource="{Binding}" Margin="10" SelectionChanged="ViewSearchResult"/>
-                    <Button Grid.Row="3" Content="Reassign affinities" Click="RetractRecipe" Margin="7"/>
-                    <Button Grid.Row="4" Content="Delete from archive" Click="DeleteRecipe" Margin="7"/>
+                    <Button Grid.Row="3" x:Name="btnAdaptRecipe" Content="Adapt new recipe" Click="RetractRecipe" Margin="3"/>
+                    <Button Grid.Row="4" Content="Reassign affinities" Click="RetractRecipe" Margin="3"/>
+                    <Button Grid.Row="5" Content="Delete from archive" Click="DeleteRecipe" Margin="3"/>
                     
                     
-                    <Grid Grid.Column="1" Grid.ColumnSpan="1" Grid.RowSpan="3" Grid.Row="2">
+                    <Grid Grid.Column="1" Grid.ColumnSpan="1" Grid.RowSpan="4" Grid.Row="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="20"/>
                             <RowDefinition Height="30*"/>
@@ -196,7 +208,7 @@
 
                         
                     </Grid>
-                    <ListBox x:Name="SearchResultAffinities" Grid.Row="2" Grid.Column="3" Grid.RowSpan="3" Margin="10" ItemsSource="{Binding Path=SelectedValue.Affinities, ElementName=SearchResults}"/>
+                    <ListBox x:Name="SearchResultAffinities" Grid.Row="2" Grid.Column="3" Grid.RowSpan="4" Margin="10" ItemsSource="{Binding Path=SelectedValue.Affinities, ElementName=SearchResults}"/>
 
                 </Grid>
                 

@@ -468,7 +468,10 @@ namespace WurmRecipeManager
             txtRecipeName.Text = "";
             RecipesToTaste.Add(CurrentRecipe);
             db_manager.SaveRecipe(CurrentRecipe);
-            CurrentRecipe = new Recipe(Consumers);
+            if (sender == btnForkRecipe)
+                CurrentRecipe = CurrentRecipe.Fork(); // Fork the current recipe so modifying the instance passed into the Consumers tab doesn't mess with the workbench content
+            else
+                CurrentRecipe = new Recipe(Consumers);
             CurrentRecipe.Container = (string)ContainerSelect.SelectedValue; // Prevent NULL containers on new recipe despite the combo box showing something fro mthe previous recipe
 
         }
@@ -487,6 +490,40 @@ namespace WurmRecipeManager
             db_manager.ArchiveRecipe(archived);
         }
 
+        private void EditRecipe(object sender, RoutedEventArgs e)
+        {
+            // Move recipe back to workbench
+            Recipe recipe = (sender as FrameworkElement).DataContext as Recipe;
+            db_manager.DeleteRecipe(recipe);
+            CurrentRecipe = recipe;
+            RecipesToTaste.Remove(recipe);
+        }
+
+
+        private void EditRecipeName(object sender, MouseButtonEventArgs e)
+        {
+            (sender as EditableLabel).Editing = true;
+        }
+
+        private void EditRecipeNameLostFocus(object sender, RoutedEventArgs e)
+        {
+            (sender as EditableLabel).Editing = false;
+            Recipe recipe = ((sender as EditableLabel).DataContext as Recipe);
+            recipe.Name = (sender as EditableLabel).Text as string;
+            db_manager.UpdateRecipeName(recipe);
+        }
+
+        private void EditRecipeNameKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                (sender as EditableLabel).Editing = false;
+                Recipe recipe = ((sender as EditableLabel).DataContext as Recipe);
+                recipe.Name = (sender as EditableLabel).txtBox.Text as string; // Go to the textbox directly because the binding doesn't update the property in time...the binding is still neccessary to update the label text, though.
+                db_manager.UpdateRecipeName(recipe);
+            }
+        }
+
         private void SearchAffinity(object sender, RoutedEventArgs e)
         {
             ObservableCollection<Recipe> recipes = db_manager.SearchAffinity(ConsumerSearch.Text, AffinitySearch.Text);
@@ -494,10 +531,11 @@ namespace WurmRecipeManager
             SearchResults.DataContext = recipes;
         }
 
-        private void ContainerSelected(object sender, RoutedEventArgs e)
-        {
-            CurrentRecipe.Container = (string)ContainerSelect.SelectedValue;
-        }
+        // Replaced by binding
+        //private void ContainerSelected(object sender, RoutedEventArgs e)
+        //{
+        //    CurrentRecipe.Container = (string)ContainerSelect.SelectedValue;
+        //}
 
         private void ViewSearchResult(object sender, SelectionChangedEventArgs e)
         {
@@ -567,18 +605,30 @@ namespace WurmRecipeManager
             Recipe recipe = SearchResults.SelectedValue as Recipe;
             if (recipe != null)
             {
-                db_manager.ArchiveRecipe(recipe, true);
                 (SearchResults.DataContext as ObservableCollection<Recipe>).Remove(recipe);
-                RecipesToTaste.Add(recipe);
 
-                foreach (string consumer in Consumers)
+                if (sender == btnAdaptRecipe)
                 {
-                    if (!recipe.Affinities.Any(ca => ca.Character.Equals(consumer)))
-                    {
-                        recipe.Affinities.Add(new CharacterAffinity() { Character = consumer });
-                    }
+                    
+                    CurrentRecipe = recipe.Fork();
+                    TabController.SelectedIndex = 0;
+                    //RecipesToTaste.Remove(recipe);
                 }
-                recipe.Affinities.Sort((a1,a2) => a1.Character.CompareTo(a2.Character));
+                else
+                {
+                    RecipesToTaste.Add(recipe);
+                    db_manager.ArchiveRecipe(recipe, true);
+                    
+
+                    foreach (string consumer in Consumers)
+                    {
+                        if (!recipe.Affinities.Any(ca => ca.Character.Equals(consumer)))
+                        {
+                            recipe.Affinities.Add(new CharacterAffinity() { Character = consumer });
+                        }
+                    }
+                    recipe.Affinities.Sort((a1, a2) => a1.Character.CompareTo(a2.Character));
+                }
             }
         }
 
@@ -599,6 +649,21 @@ namespace WurmRecipeManager
 
             SearchResults.DataContext = recipes;
         }
+
+
+        private void scrUpdateHiddenScrolls(object sender, ScrollChangedEventArgs e)
+        {
+            scrRecipeNames.ScrollToVerticalOffset(scrViewAffinities.VerticalOffset);
+            scrRecipeNames.UpdateLayout();
+            scrConsumers.ScrollToHorizontalOffset(scrViewAffinities.HorizontalOffset);
+            scrConsumers.UpdateLayout();
+        }
+
+
+
+
+
+
     }
 
 
