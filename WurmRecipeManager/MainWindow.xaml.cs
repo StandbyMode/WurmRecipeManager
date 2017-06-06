@@ -492,11 +492,12 @@ namespace WurmRecipeManager
 
         private void EditRecipe(object sender, RoutedEventArgs e)
         {
-            // Move recipe back to workbench
+            // Move recipe from consumers tab back to workbench
             Recipe recipe = (sender as FrameworkElement).DataContext as Recipe;
             db_manager.DeleteRecipe(recipe);
             CurrentRecipe = recipe;
             RecipesToTaste.Remove(recipe);
+            TabController.SelectedIndex = 0; // Switch view so user doesn't get any dumb idea to move another recipe back ,this will overwrite the previously moved recipe!
         }
 
 
